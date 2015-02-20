@@ -51,9 +51,11 @@
 
     // Testing user routes:
     require('./users');
-    require('./auth');
+    require('./api');
     require('./children');
     require('./classrooms');
     require('./departuretime');
+    require('./user_on_route');
+    require('./school');
 
 }());

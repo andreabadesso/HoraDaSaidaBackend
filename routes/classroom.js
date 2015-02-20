@@ -7,16 +7,17 @@
         _           = require('lodash');
 
     router.get('/', function(req, res, next) {
-        models.Classroom.findAll()
-            .then(function(classrooms) {
-                res.send(classrooms);
-            }, function(err) {
-                console.log(err);
-                return next({
-                    'status': 500,
-                    'message': 'Error finding classrooms.'
-                });
+        models.Classroom.findAll({
+            include: [models.DepartureTime]
+        }).then(function(classrooms) {
+            res.send(classrooms);
+        }, function(err) {
+            console.log(err);
+            return next({
+                'status': 500,
+                'message': 'Error finding classrooms.'
             });
+        });
     });
 
     router.get('/:id/departure_times', function(req, res, next) {
@@ -47,6 +48,18 @@
                 'message': 'Error finding classroom.'
             });
         });
+    });
+
+    router.put('/', function(req, res, next) {
+        models.Classroom.create(req.body)
+            .then(function(classroom) {
+                res.send(classroom);
+            }, function(err) {
+                return next({
+                    'status': 500,
+                    'message': 'Error while creating classroom.'
+                });
+            });
     });
 
     module.exports = router;

@@ -10,6 +10,7 @@ module.exports = function (sequelize, DataTypes) {
                 DepartureTime.belongsToMany(models.Classroom, {
                     through: 'ClassroomDepartureTime'
                 });
+                DepartureTime.hasMany(models.UserOnRoute);
             }
         }
     });

@@ -15,7 +15,7 @@
         API_ENDPOINT    = 'http://localhost:3001/',
         server          = null;
 
-    describe('Classroom Routes', function() {
+    describe('DepartureTime Routes', function() {
 
         before(function(done) {
             server = app.listen(3001, function (err, result) {
@@ -70,6 +70,21 @@
                 });
         });
 
+        it('should create an classroom', function(done) {
+            request.put(API_ENDPOINT + 'classroom', {
+                json: true,
+                resolveWithFullResponse: true,
+                body: {
+                    'name': '302D'
+                }
+            })
+            .then(function(res) {
+                res.statusCode.should.equal(200);
+                done();
+            }, function(err) {
+                done(err);
+            });
+        });
     });
 
 }());

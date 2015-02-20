@@ -3,7 +3,8 @@
 
     var express     = require('express'),
         router      = express.Router(),
-        models      = require('../models');
+        models      = require('../models'),
+        _           = require('lodash');
 
     router.get('/', function(req, res, next) {
         res.send('Wow');
@@ -13,8 +14,76 @@
         res.send(req.user);
     });
 
-    router.get('/me/children', function(req, res, next) {
+    router.get('/me/route', function(req, res, next) {
+        var id = req.user.id;
 
+        models.User.find({
+            where: {
+                id: id
+            }
+        }).then(function(user) {
+            if (!user) {
+                return next({
+                    'status': 500,
+                    'message': 'Could not find the user\'s Route'
+                });
+            }
+            user.getUserOnRoute()
+                .then(function(usersOnRoute) {
+                    res.send(usersOnRoute);
+                });
+        }, function(err) {
+            return next({
+                'status': 500,
+                'message': 'Could not find the user\'s Route'
+            });
+        });
+    });
+
+    router.post('/me/route', function(req, res, next) {
+        var id = req.user.id;
+
+        models.User.find({
+            where: {
+                id: id
+            }
+        }).then(function(user) {
+            if (!user) {
+                return next({
+                    'status': 500,
+                    'message': 'Could not find the user\'s route'
+                });
+            }
+            user.getUserOnRoute()
+                .then(function(userOnRoute) {
+
+                    if (!userOnRoute) {
+                        return next({
+                            'status': 500,
+                            'message': 'Could not find the user\'s route2'
+                        });
+                    }
+
+                    _.each(Object.keys(userOnRoute.dataValues), function(key) {
+                        if (req.body.hasOwnProperty(key)) {
+                            userOnRoute.setDataValue(key, req.body[key]);
+                        }
+                    });
+
+                    userOnRoute.save()
+                        .then(function(userOnRoute) {
+                            res.send(userOnRoute);
+                        });
+                });
+        }, function(err) {
+            return next({
+                'status': 500,
+                'message': 'Could not find the user\'s children'
+            });
+        });
+    });
+
+    router.get('/me/children', function(req, res, next) {
         var id = req.user.id;
         models.User.find({
             where: {

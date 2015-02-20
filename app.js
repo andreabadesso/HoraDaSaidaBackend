@@ -17,6 +17,8 @@
     var classroom       = require('./routes/classroom');
     var api             = require('./routes/api');
     var departureTime   = require('./routes/departure');
+    var usersOnRoute    = require('./routes/user_on_route.js');
+    var school          = require('./routes/school.js');
 
     var app = express();
 
@@ -40,6 +42,8 @@
     app.use('/children', children);
     app.use('/classroom', classroom);
     app.use('/departure_time', departureTime);
+    app.use('/users_on_route', usersOnRoute);
+    app.use('/school', school);
 
     app.use(function(req, res, next) {
         var err = new Error('Not Found');

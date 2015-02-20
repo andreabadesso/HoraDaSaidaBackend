@@ -11,6 +11,7 @@ module.exports = function (sequelize, DataTypes) {
                 Classroom.belongsToMany(models.DepartureTime, {
                     through: 'ClassroomDepartureTime'
                 });
+                Classroom.belongsTo(models.School);
             }
         }
     });

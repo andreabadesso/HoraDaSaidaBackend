@@ -11,6 +11,8 @@ module.exports = function (sequelize, DataTypes) {
                 User.belongsToMany(models.Children, {
                     through: 'UserChildren'
                 });
+                User.hasOne(models.UserOnRoute);
+                User.belongsTo(models.School);
             }
         }
     });

@@ -88,6 +88,29 @@
             });
         });
 
+        it('should associate a DepartureTime with the mock Classroom', function(done) {
+            request.post(API_ENDPOINT + 'departure_time/' + mockDepartureTime.id + '/classroom/' + mockClassroom.id, {
+                resolveWithFullResponse: true
+            })
+            .then(function(res) {
+                res.statusCode.should.equal(200);
+                request(API_ENDPOINT + 'departure_time/' + mockDepartureTime.id, {
+                    resolveWithFullResponse: true
+                }).then(function(res) {
+                    res.statusCode.should.equal(200);
+                    var data = JSON.parse(res.body);
+                    var classrooms = data.Classrooms;
+                    if (_.find(classrooms, {'id': mockClassroom.id})) {
+                        done();
+                    } else {
+                        done(new Error('Could not find the related classroom on the departureTime'));
+                    }
+                });
+            }, function(err) {
+                done(err);
+            });
+        });
+
     });
 
 }());

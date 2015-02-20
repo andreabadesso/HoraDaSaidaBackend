@@ -15,7 +15,9 @@
         User: sequelize['import'](__dirname + '/user'),
         Children: sequelize['import'](__dirname + '/children'),
         Classroom: sequelize['import'](__dirname + '/classroom'),
-        DepartureTime: sequelize['import'](__dirname + '/departure_time')
+        DepartureTime: sequelize['import'](__dirname + '/departure_time'),
+        UserOnRoute: sequelize['import'](__dirname + '/user_on_route'),
+        School: sequelize['import'](__dirname + '/school')
     };
 
     Object.keys(db).forEach(function(modelName) {
