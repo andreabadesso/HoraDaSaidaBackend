@@ -6,10 +6,9 @@
         app             = require('../../app.js'),
         request         = require('request-promise'),
         _               = require('lodash'),
-        sequelize       = require('../../db').sequelize,
         async           = require('async');
 
-    var models          = require('../../models')(sequelize);
+    var models          = require('../../models');
 
     var sessionCookie   = null,
         API_ENDPOINT    = 'http://localhost:3001/',
@@ -22,29 +21,16 @@
                 if (err) {
                     done(err);
                 } else {
-                    sequelize.sync({ force: true })
+                    models.sequelize.sync({ force: true })
                         .then(function() {
-                            async.each(Object.keys(models), function(key, callback) {
-                                if ('associate' in models[key]) {
-                                    models[key].associate(models);
-                                    callback();
-                                } else {
-                                    callback();
-                                }
+                            models.User.create({
+                                username: 'test',
+                                password: 'test',
+                                name: 'Test User'
+                            }).then(function(user) {
+                                done();
                             }, function(err) {
-                                if (err) {
-                                    done(err);
-                                } else {
-                                    models.User.create({
-                                        username: 'test',
-                                        password: 'test',
-                                        name: 'Test User'
-                                    }).then(function(user) {
-                                        done();
-                                    }, function(err) {
-                                        done(err);
-                                    });
-                                }
+                                done(err);
                             });
                         });
                 }
@@ -52,7 +38,7 @@
         });
 
         after(function(done) {
-            sequelize.sync({ force: true })
+            models.sequelize.sync({ force: true })
                 .then(function() {
                     server.close();
                     done();
@@ -194,7 +180,7 @@
             });
         });
 
-        /*it('should return token user children information', function(done) {
+        it('should return token user children information', function(done) {
             request({
                 uri: API_ENDPOINT + 'api/me/children',
                 method: 'GET',
@@ -211,7 +197,7 @@
             }, function(err) {
                 done(err);
             });
-        });*/
+        });
     });
 
 }());

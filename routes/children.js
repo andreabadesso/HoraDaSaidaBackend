@@ -3,16 +3,18 @@
 
     var express     = require('express'),
         router      = express.Router(),
-        sequelize   = require('../db').sequelize,
-        models      = require('../models')(sequelize);
+        models      = require('../models');
 
     router.put('/', function(req, res, next) {
+        models.Children.associate(models);
         models.Children.create(req.body)
             .then(function(child) {
-                //res.send('porra');
-                res.send(child.getUsers());
-                //res.send(child);
+                child.getUsers()
+                    .then(function(users) {
+                        res.send(users);
+                    });
             }, function(err) {
+                console.log(err);
                 return next({
                     'status': 500,
                     'message': 'Server error.'

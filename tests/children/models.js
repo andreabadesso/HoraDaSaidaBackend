@@ -4,47 +4,35 @@
     var chai            = require('chai'),
         chaiAsPromised  = require('chai-as-promised'),
         _               = require('lodash'),
-        sequelize       = require('../../db').sequelize,
         async           = require('async');
 
     var server          = null;
 
-    var models = require('../../models')(sequelize);
+    var models = require('../../models');
 
     describe('Children Models', function() {
         beforeEach(function(done) {
-            async.each(Object.keys(models), function(key, callback) {
-                if ('associate' in models[key]) {
-                    models[key].associate(models);
-                    callback();
-                }
-            }, function(err) {
-                if (err) {
+            models.sequelize.sync({ force: true })
+                .then(function() {
+                    models.User.create({
+                        username: 'test',
+                        password: 'test',
+                        name: 'Test User'
+                    }).then(function() {
+                        done();
+                    }, function(err) {
+                        done(err);
+                    });
+                }, function(err) {
                     done(err);
-                } else {
-                    sequelize.sync({ force: true })
-                        .then(function() {
-                            models.User.create({
-                                username: 'test',
-                                password: 'test',
-                                name: 'Test User'
-                            }).then(function() {
-                                done();
-                            }, function(err) {
-                                done(err);
-                            });
-                        }, function(err) {
-                            done(err);
-                        });
-                }
-            });
+                });
         });
 
         /*
         * Destroy the server
         */
         after(function(done) {
-            sequelize.sync({ force: true })
+            models.sequelize.sync({ force: true })
                 .then(function() {
                     models.User.create({
                         username: 'test',

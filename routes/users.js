@@ -4,11 +4,10 @@
     var express     = require('express'),
         _           = require('lodash'),
         app         = require('../app'),
-        sequelize   = require('../db').sequelize,
         router      = express.Router(),
         jwt         = require('jsonwebtoken');
 
-    var models      = require('../models')(sequelize);
+    var models      = require('../models');
 
     router.get('/', function(req, res) {
         models.User.findAll({

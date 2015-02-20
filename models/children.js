@@ -1,16 +1,14 @@
-module.exports = function (sequelize) {
+module.exports = function (sequelize, DataTypes) {
+
     'use strict';
 
-    var Sequelize = require('sequelize');
-
     var Children = sequelize.define('Children', {
-        'name': Sequelize.STRING,
-        'class': Sequelize.STRING,
-        'age': Sequelize.INTEGER
+        'name': DataTypes.STRING,
+        'class': DataTypes.STRING,
+        'age': DataTypes.INTEGER
     }, {
         classMethods: {
             associate: function(models) {
-                console.log('Associating Children with User');
                 Children.belongsToMany(models.User, {
                     through: 'UserChildren'
                 });

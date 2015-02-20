@@ -3,8 +3,7 @@
 
     var express     = require('express'),
         router      = express.Router(),
-        sequelize   = require('../db').sequelize,
-        models      = require('../models')(sequelize);
+        models      = require('../models');
 
     router.get('/', function(req, res, next) {
         res.send('Wow');
@@ -16,13 +15,6 @@
 
     router.get('/me/children', function(req, res, next) {
 
-        models.Children.findAll()
-            .then(function(kids) {
-                var kid = kids[0];
-                res.send(kid.getUsers());
-            });
-
-    /*
         var id = req.user.id;
         models.User.find({
             where: {
@@ -45,7 +37,7 @@
                 'status': 500,
                 'message': 'Could not find the user\'s children'
             });
-        });*/
+        });
     });
 
     module.exports = router;

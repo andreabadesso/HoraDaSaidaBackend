@@ -9,10 +9,8 @@
         bodyParser      = require('body-parser'),
         expressJwt      = require('express-jwt'),
         jwt             = require('jsonwebtoken'),
-        async           = require('async'),
-        sequelize       = require('./db').sequelize;
+        async           = require('async');
 
-    var models      = require('./models')(sequelize);
     var routes      = require('./routes/index');
     var users       = require('./routes/users');
     var children    = require('./routes/children');
@@ -64,17 +62,6 @@
             message: err.message,
             error: {}
         });
-    });*/
-
-    /*async.each(Object.keys(models), function(key, callback) {
-        if ('associate' in models[key]) {
-            models[key].associate(models);
-            callback();
-        }
-    }, function(err) {
-        sequelize.sync({ force: false })
-            .then(function() {
-            });
     });*/
 
     module.exports = app;
