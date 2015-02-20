@@ -6,13 +6,16 @@
         Sequelize = require('sequelize'),
         sequelize = new Sequelize('', '', '', {
             storage: 'test' === process.env.NODE_ENV ? 'test' : 'devel',
-            dialect: 'sqlite'
+            dialect: 'sqlite',
+            logging: false
         });
 
 
     var db = {
         User: sequelize['import'](__dirname + '/user'),
-        Children: sequelize['import'](__dirname + '/children')
+        Children: sequelize['import'](__dirname + '/children'),
+        Classroom: sequelize['import'](__dirname + '/classroom'),
+        DepartureTime: sequelize['import'](__dirname + '/departure_time')
     };
 
     Object.keys(db).forEach(function(modelName) {

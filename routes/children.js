@@ -3,7 +3,8 @@
 
     var express     = require('express'),
         router      = express.Router(),
-        models      = require('../models');
+        models      = require('../models'),
+        _           = require('lodash');
 
     router.put('/', function(req, res, next) {
         models.Children.create(req.body)
@@ -18,7 +19,6 @@
     });
 
     router.put('/user/:id', function(req, res, next) {
-
         var id = parseInt(req.params.id, 10);
 
         models.User.find({
@@ -46,6 +46,75 @@
                         'message': 'Server error.'
                     });
                 });
+        });
+    });
+
+    router.delete('/:id', function(req, res, next) {
+        var id = parseInt(req.params.id, 10);
+
+        models.Children.find({
+            where: {
+                id: id
+            }
+        }).then(function(child) {
+
+            if (!child) {
+                return next({
+                    'status': 404,
+                    'message': 'Child not found.'
+                });
+            }
+
+            child.destroy()
+                .then(function() {
+                    res.send({
+                        'status': 200,
+                        'message': 'OK'
+                    });
+                }, function(err) {
+                    console.log(err);
+                    return next({
+                        'status': 500,
+                        'message': 'Error deleting the child.'
+                    });
+                });
+
+        });
+    });
+
+    router.post('/:id', function(req, res, next) {
+        var id = parseInt(req.params.id, 10);
+
+        models.Children.find({
+            where: {
+                id: id
+            }
+        }).then(function(child) {
+
+            if (!child) {
+                return next({
+                    'status': 404,
+                    'message': 'Child not found.'
+                });
+            }
+
+            _.each(Object.keys(child.dataValues), function(key) {
+                if (req.body.hasOwnProperty(key)) {
+                    child.setDataValue(key, req.body[key]);
+                }
+            });
+
+            child.save()
+                .then(function(child) {
+                    res.send(child);
+                }, function(err) {
+                    console.log(err);
+                    return next({
+                        'status': 500,
+                        'message': 'Error saving the child.'
+                    });
+                });
+
         });
     });
 

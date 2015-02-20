@@ -53,5 +53,7 @@
     require('./users');
     require('./auth');
     require('./children');
+    require('./classrooms');
+    require('./departuretime');
 
 }());

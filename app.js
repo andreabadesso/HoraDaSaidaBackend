@@ -11,10 +11,12 @@
         jwt             = require('jsonwebtoken'),
         async           = require('async');
 
-    var routes      = require('./routes/index');
-    var users       = require('./routes/users');
-    var children    = require('./routes/children');
-    var api         = require('./routes/api');
+    var routes          = require('./routes/index');
+    var users           = require('./routes/users');
+    var children        = require('./routes/children');
+    var classroom       = require('./routes/classroom');
+    var api             = require('./routes/api');
+    var departureTime   = require('./routes/departure');
 
     var app = express();
 
@@ -36,6 +38,8 @@
     app.use('/users', users);
     app.use('/api', api);
     app.use('/children', children);
+    app.use('/classroom', classroom);
+    app.use('/departure_time', departureTime);
 
     app.use(function(req, res, next) {
         var err = new Error('Not Found');

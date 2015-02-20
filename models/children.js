@@ -12,6 +12,9 @@ module.exports = function (sequelize, DataTypes) {
                 Children.belongsToMany(models.User, {
                     through: 'UserChildren'
                 });
+                Children.belongsTo(models.Classroom, {
+                    through: 'UserChildren'
+                });
             }
         }
     });
