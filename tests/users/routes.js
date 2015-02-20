@@ -11,6 +11,7 @@
     var models          = require('../../models');
 
     var sessionCookie   = null,
+        mockUser        = null,
         API_ENDPOINT    = 'http://localhost:3001/',
         server          = null;
 
@@ -28,6 +29,7 @@
                                 password: 'test',
                                 name: 'Test User'
                             }).then(function(user) {
+                                mockUser = user;
                                 done();
                             }, function(err) {
                                 done(err);
@@ -179,6 +181,65 @@
                 done(err);
             });
         });
+
+        it('should return an object containing information about the mock user', function(done) {
+            request({
+                uri: API_ENDPOINT + 'users/' + mockUser.id,
+                method: 'GET',
+                resolveWithFullResponse: true,
+                headers: {
+                    'Authorization': 'Bearer ' + sessionCookie
+                }
+            })
+            .then(function(res) {
+                res.statusCode.should.equal(200);
+                var data = JSON.parse(res.body);
+                (typeof data).should.equal('object');
+                done();
+            }, function(err) {
+                done(err);
+            });
+        });
+
+        it('should return the mock user\'s children', function(done) {
+            request({
+                uri: API_ENDPOINT + 'users/' + mockUser.id,
+                method: 'GET',
+                resolveWithFullResponse: true,
+                headers: {
+                    'Authorization': 'Bearer ' + sessionCookie
+                }
+            })
+            .then(function(res) {
+                res.statusCode.should.equal(200);
+                var data = JSON.parse(res.body);
+                (typeof data).should.equal('object');
+                Object.keys(data).should.contain('Children');
+                done();
+            }, function(err) {
+                done(err);
+            });
+        });
+
+        it('should return all users with their children', function(done) {
+            request({
+                uri: API_ENDPOINT + 'users/',
+                method: 'GET',
+                resolveWithFullResponse: true
+            })
+            .then(function(res) {
+                res.statusCode.should.equal(200);
+                var data = JSON.parse(res.body);
+                Array.isArray(data).should.equal(true);
+                _.each(data, function(user) {
+                    Object.keys(user).should.contain('Children');
+                });
+                done();
+            }, function(err) {
+                done(err);
+            });
+        });
+
 
         it('should return token user children information', function(done) {
             request({

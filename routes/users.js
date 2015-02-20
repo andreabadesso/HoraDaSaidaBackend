@@ -9,17 +9,47 @@
 
     var models      = require('../models');
 
-    router.get('/', function(req, res) {
-        models.User.findAll({
+    router.get('/:id', function(req, res, next) {
+        var id = parseInt(req.params.id, 10);
+
+        models.User.find({
+            where: {
+                id: id
+            },
+            include: [
+                models.Children
+            ],
             attributes: [
                 'id',
                 'username',
                 'name'
             ]
         })
-            .then(function(users) {
-                res.send(users);
-            });
+        .then(function(user) {
+            if (!user) {
+                return next({
+                    'status': 404,
+                    'message': 'User not found.'
+                });
+            }
+            res.send(user);
+        });
+    });
+
+    router.get('/', function(req, res) {
+        models.User.findAll({
+            include: [
+                models.Children
+            ],
+            attributes: [
+                'id',
+                'username',
+                'name'
+            ]
+        })
+        .then(function(users) {
+            res.send(users);
+        });
     });
 
     router.put('/', function(req, res, next) {
