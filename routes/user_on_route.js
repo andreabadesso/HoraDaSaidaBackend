@@ -29,7 +29,7 @@
     });
 
     /**
-     * @api {put} /users_on_route/:id CreateAndAssociateToUser
+     * @api {put} /users_on_route/user/:id CreateAndAssociateToUser
      * @apiName CreateAndAssociateToUser
      * @apiGroup UserOnRoute
      *

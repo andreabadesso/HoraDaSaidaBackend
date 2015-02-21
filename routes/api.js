@@ -4,7 +4,8 @@
     var express     = require('express'),
         router      = express.Router(),
         models      = require('../models'),
-        _           = require('lodash');
+        _           = require('lodash'),
+        turf        = require('turf');
 
     router.get('/', function(req, res, next) {
         res.send('Wow');
@@ -58,6 +59,66 @@
         });
     });
 
+
+    /**
+     * @api {get} /school/distance/:latitude/:longitude
+     * CalculateDistanceToSchool
+     *
+     * @apiName CalculateDistanceToSchool
+     * @apiGroup School
+     *
+     * @apiParam {Float} latitude The latitude to compare.
+     * @apiParam {Float} longitude The longitude to compare.
+     *
+     * @apiDescription Compares the school position to a pair of latLng and
+     * returns the distance in kilometers.
+     */
+    router.get('/me/school/distance/:latitude/:longitude',
+        function(req, res, next) {
+            var schoolId = parseInt(req.params.schoolId, 10);
+            var latitude = parseFloat(req.params.latitude, 10);
+            var longitude = parseFloat(req.params.longitude, 10);
+            var id = req.user.id;
+
+            models.User.find({
+                where: {
+                    id: id
+                },
+            }).then(function(user) {
+                user.getSchool()
+                    .then(function(school) {
+                        if (!school) {
+                            return next({
+                                'status': 404,
+                                'message': 'Could not find the logged' +
+                                'in user school.'
+                            });
+                        }
+
+                        var x = turf.point([latitude, longitude]);
+                        var y = turf.point([school.latitude, school.longitude]);
+
+                        var distance = turf.distance(x, y);
+
+                        res.send({
+                            'status': 200,
+                            'message': 'OK',
+                            'distance': distance,
+                            'schoolPos': {
+                                latitude: school.latitude,
+                                longitude: school.longitude
+                            }
+                        });
+
+                    }, function(err) {
+                        return next({
+                            'status': 500,
+                            'message': 'The school could not be found.'
+                        });
+                    });
+            });
+    });
+
     /**
      * @api {post} /api/me/position UpdateUserPosition
      *
@@ -81,32 +142,24 @@
             if (!user) {
                 return next({
                     'status': 500,
-                    'message': 'Could not find the user\'s route'
+                    'message': 'Could not find the user'
                 });
             }
-            user.getUserOnRoute()
-                .then(function(userOnRoute) {
 
-                    if (!userOnRoute) {
-                        return next({
-                            'status': 500,
-                            'message': 'Could not find the user\'s route2'
-                        });
-                    }
+            var keys = ['latitude', 'longitude'];
+            _.each(keys, function(key) {
+                if (req.body.hasOwnProperty(key)) {
+                    user.setDataValue(key, req.body[key]);
+                }
+            });
 
-                    var keys = ['latitude', 'longitude'];
-                    _.each(keys, function(key) {
-                        if (req.body.hasOwnProperty(key)) {
-                            userOnRoute.setDataValue(key, req.body[key]);
-                        }
-                    });
-
-                    userOnRoute.save()
-                        .then(function(userOnRoute) {
-                            // Update user distance to school:
-                            // userOnRoute.updateDistance();
-                            res.send(userOnRoute);
-                        });
+            user.save()
+                .then(function(user) {
+                    var latLng = {
+                        latitude: user.latitude,
+                        longitude: user.longitude
+                    };
+                    res.send(latLng);
                 });
 
         }, function(err) {

@@ -27,7 +27,7 @@
     });
 
     /**
-     * @api {get} /departure_time FindDepartureTimeById
+     * @api {get} /departure_time/:id FindDepartureTimeById
      *
      * @apiName FindDepartureTimeById
      * @apiGroup DepartureTime

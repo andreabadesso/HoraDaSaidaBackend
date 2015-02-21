@@ -457,7 +457,7 @@
   },
   {
     "type": "get",
-    "url": "/departure_time",
+    "url": "/departure_time/:id",
     "title": "FindDepartureTimeById",
     "name": "FindDepartureTimeById",
     "group": "DepartureTime",
@@ -481,7 +481,7 @@
   },
   {
     "type": "post",
-    "url": "/school",
+    "url": "/school/:schoolId/users/:userId",
     "title": "AssociateUserToSchool",
     "name": "AssociateUserToSchool",
     "group": "School",
@@ -501,6 +501,68 @@
     "description": "<p>Associates an User to a School</p> ",
     "version": "0.0.0",
     "filename": "routes/school.js",
+    "groupTitle": "School"
+  },
+  {
+    "type": "get",
+    "url": "/school/:schoolId/distance/:latitude/:longitude",
+    "title": "CalculateDistanceToSchool",
+    "name": "CalculateDistanceToSchool",
+    "group": "School",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Float",
+            "optional": false,
+            "field": "latitude",
+            "description": "<p>The latitude to compare.</p> "
+          },
+          {
+            "group": "Parameter",
+            "type": "Float",
+            "optional": false,
+            "field": "longitude",
+            "description": "<p>The longitude to compare.</p> "
+          }
+        ]
+      }
+    },
+    "description": "<p>Compares the school position to a pair of latLng and returns the distance in kilometers.</p> ",
+    "version": "0.0.0",
+    "filename": "routes/school.js",
+    "groupTitle": "School"
+  },
+  {
+    "type": "get",
+    "url": "/school/distance/:latitude/:longitude",
+    "title": "CalculateDistanceToSchool",
+    "name": "CalculateDistanceToSchool",
+    "group": "School",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Float",
+            "optional": false,
+            "field": "latitude",
+            "description": "<p>The latitude to compare.</p> "
+          },
+          {
+            "group": "Parameter",
+            "type": "Float",
+            "optional": false,
+            "field": "longitude",
+            "description": "<p>The longitude to compare.</p> "
+          }
+        ]
+      }
+    },
+    "description": "<p>Compares the school position to a pair of latLng and returns the distance in kilometers.</p> ",
+    "version": "0.0.0",
+    "filename": "routes/api.js",
     "groupTitle": "School"
   },
   {
@@ -529,7 +591,7 @@
   },
   {
     "type": "get",
-    "url": "/school",
+    "url": "/school/:id/users",
     "title": "GetSchoolUsers",
     "name": "GetSchoolUsers",
     "group": "School",
@@ -666,7 +728,7 @@
   },
   {
     "type": "put",
-    "url": "/users_on_route/:id",
+    "url": "/users_on_route/user/:id",
     "title": "CreateAndAssociateToUser",
     "name": "CreateAndAssociateToUser",
     "group": "UserOnRoute",

@@ -38,7 +38,8 @@
     });
 
     /**
-     * @api {post} /school CalculateDistanceToSchool
+     * @api {get} /school/:schoolId/distance/:latitude/:longitude
+     * CalculateDistanceToSchool
      *
      * @apiName CalculateDistanceToSchool
      * @apiGroup School
@@ -88,7 +89,7 @@
     });
 
     /**
-     * @api {post} /school AssociateUserToSchool
+     * @api {post} /school/:schoolId/users/:userId AssociateUserToSchool
      *
      * @apiName AssociateUserToSchool
      * @apiGroup School
@@ -150,7 +151,7 @@
     });
 
     /**
-     * @api {get} /school GetSchoolUsers
+     * @api {get} /school/:id/users GetSchoolUsers
      *
      * @apiName GetSchoolUsers
      * @apiGroup School

@@ -120,12 +120,10 @@
         });
 
         it('should calculate mock user\'s school distance', function(done) {
-
             var coordinates = [
                 -23.47,
                 -43.48
             ];
-
             request(API_ENDPOINT + 'api/me/school/distance/' +
                     coordinates[0] + '/' +
                     coordinates[1], {
