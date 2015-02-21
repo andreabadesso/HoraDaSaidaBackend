@@ -5,12 +5,19 @@ module.exports = function (sequelize, DataTypes) {
     var UserOnRoute = sequelize.define('UserOnRoute', {
         'ETA': DataTypes.BIGINT,
         'distance': DataTypes.INTEGER,
-        'message': DataTypes.TEXT
+        'message': DataTypes.TEXT,
+        'latitude': DataTypes.FLOAT,
+        'longitude': DataTypes.FLOAT
     }, {
         classMethods: {
             associate: function(models) {
                 UserOnRoute.belongsTo(models.DepartureTime);
                 UserOnRoute.belongsTo(models.User);
+            }
+        },
+        hooks: {
+            afterUpdate: function(attrs, options, cb) {
+                cb();
             }
         }
     });

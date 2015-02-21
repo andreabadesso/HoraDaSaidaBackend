@@ -4,8 +4,10 @@ module.exports = function (sequelize, DataTypes) {
 
     var Children = sequelize.define('Children', {
         'name': DataTypes.STRING,
+        'picture': DataTypes.STRING,
         'class': DataTypes.STRING,
-        'age': DataTypes.INTEGER
+        'age': DataTypes.INTEGER,
+        'status': DataTypes.STRING
     }, {
         classMethods: {
             associate: function(models) {

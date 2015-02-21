@@ -6,6 +6,14 @@
         models      = require('../models'),
         _           = require('lodash');
 
+    /**
+     * @api {get} /classroom FindAllClassrooms
+     *
+     * @apiName FindAllClassrooms
+     * @apiGroup Classroom
+     *
+     * @apiDescription Finds all Classrooms on the database
+     */
     router.get('/', function(req, res, next) {
         models.Classroom.findAll({
             include: [models.DepartureTime]
@@ -20,6 +28,16 @@
         });
     });
 
+    /**
+     * @api {get} /classroom FindClassroomDepartureTimes
+     *
+     * @apiName FindClassroomDepartureTimes
+     * @apiGroup Classroom
+     *
+     * @apiParam {Integer} id Classroom id
+     *
+     * @apiDescription Finds all departure time from a requested Classroom
+     */
     router.get('/:id/departure_times', function(req, res, next) {
         var id = parseInt(req.params.id, 10);
 
@@ -50,6 +68,16 @@
         });
     });
 
+    /**
+     * @api {put} /classroom CreateClassroom
+     *
+     * @apiName CreateClassroom
+     * @apiGroup Classroom
+     *
+     * @apiParam {String} name The classroom name.
+     *
+     * @apiDescription Create a new Classroom
+     */
     router.put('/', function(req, res, next) {
         models.Classroom.create(req.body)
             .then(function(classroom) {

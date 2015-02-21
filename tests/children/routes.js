@@ -36,7 +36,10 @@
                                 models.Children.create({
                                     'name': 'Test Child',
                                     'age': 13,
-                                    'class': '302B'
+                                    'class': '302B',
+                                    'picture': 'http://lorempixel.com/100/' +
+                                        '100/people/',
+                                    'status': '-'
                                 }).then(function(children) {
                                     mockChildren = children;
                                     done();
@@ -74,7 +77,8 @@
                 body: {
                     'name': 'Raquel',
                     'age': 14,
-                    'class': '302B'
+                    'class': '302B',
+                    'status': '-'
                 }
             })
             .then(function(res) {
@@ -92,7 +96,9 @@
                 body: {
                     'name': 'Raquel',
                     'age': 14,
-                    'class': '302B'
+                    'class': '302B',
+                    'picture': 'http://lorempixel.com/100/100/people/',
+                    'status': '-'
                 }
             })
             .then(function(res) {
@@ -107,6 +113,35 @@
          * Edit
          */
 
+        it('should get all the Children on the database', function(done) {
+            request.get(API_ENDPOINT + 'children', {
+                resolveWithFullResponse: true,
+                json: true
+            })
+            .then(function(res) {
+                res.statusCode.should.equal(200);
+                Array.isArray(res.body).should.equal(true);
+                done();
+            }, function(err) {
+                done(err);
+            });
+        });
+
+        it('should get all the mock children by its id', function(done) {
+            request.get(API_ENDPOINT + 'children/' + mockChildren.id, {
+                resolveWithFullResponse: true,
+                json: true
+            })
+            .then(function(res) {
+                res.statusCode.should.equal(200);
+                (typeof res.body).should.equal('object');
+                res.body.name.should.equal('Test Child');
+                done();
+            }, function(err) {
+                done(err);
+            });
+        });
+
         it('should edit the mock children\'s name', function(done) {
             request.post(API_ENDPOINT + 'children/' + mockChildren.id, {
                 json: true,
@@ -118,6 +153,40 @@
             .then(function(res) {
                 res.statusCode.should.equal(200);
                 res.body.name.should.equal('Edited Children');
+                done();
+            }, function(err) {
+                done(err);
+            });
+        });
+
+        it('should edit the mock children\'s image', function(done) {
+            request.post(API_ENDPOINT + 'children/' + mockChildren.id, {
+                json: true,
+                resolveWithFullResponse: true,
+                body: {
+                    'picture': 'http://lorempixel.com/100/100/cats/'
+                }
+            })
+            .then(function(res) {
+                res.statusCode.should.equal(200);
+                res.body.picture.should.equal('http://lorempixel.com/100/100/cats/');
+                done();
+            }, function(err) {
+                done(err);
+            });
+        });
+
+        it('should edit the mock children\'s status', function(done) {
+            request.post(API_ENDPOINT + 'children/' + mockChildren.id, {
+                json: true,
+                resolveWithFullResponse: true,
+                body: {
+                    'status': 'Waiting'
+                }
+            })
+            .then(function(res) {
+                res.statusCode.should.equal(200);
+                res.body.status.should.equal('Waiting');
                 done();
             }, function(err) {
                 done(err);

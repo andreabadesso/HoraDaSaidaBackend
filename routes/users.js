@@ -9,6 +9,16 @@
 
     var models      = require('../models');
 
+    /**
+     * @api {get} /user/:id FindUserById
+     *
+     * @apiName FindUserById
+     * @apiGroup User
+     *
+     * @apiParam {Number} id User identifier
+     *
+     * @apiDescription Finds User by its unique identifier.
+     */
     router.get('/:id', function(req, res, next) {
         var id = parseInt(req.params.id, 10);
 
@@ -36,6 +46,14 @@
         });
     });
 
+    /**
+     * @api {get} /user/ FindAllUsers
+     *
+     * @apiName FindAllUsers
+     * @apiGroup User
+     *
+     * @apiDescription Finds all Users currently on database
+     */
     router.get('/', function(req, res) {
         models.User.findAll({
             include: [
@@ -52,6 +70,18 @@
         });
     });
 
+    /**
+     * @api {put} /user/ CreateUser
+     *
+     * @apiName CreateUser
+     * @apiGroup User
+     *
+     * @apiParam {String} name The User's name
+     * @apiParam {String} username The User's username
+     * @apiParam {String} password The User's password
+     *
+     * @apiDescription Creates a new User
+     */
     router.put('/', function(req, res, next) {
         models.User.create(req.body)
             .then(function(user) {
@@ -64,6 +94,22 @@
             });
     });
 
+    /**
+     * @api {post} /users/login Login
+     *
+     * @apiName Login
+     * @apiGroup User
+     *
+     * @apiParam {String} username User username in plain text
+     * @apiParam {String} password User password in plain text
+     *
+     * @apiSuccessExample {json} Success-Response:
+     *      HTTP/1.1 200 OK
+     *      {
+     *          "token": "JWTTOKEN"
+     *      }
+     * @apiDescription Exchange username and password for a JWT Token
+     */
     router.post('/login', function(req, res, next) {
 
         models.User.find({

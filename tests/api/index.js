@@ -5,12 +5,14 @@
         chaiAsPromised  = require('chai-as-promised'),
         app             = require('../../app.js'),
         request         = require('request-promise'),
-        _               = require('lodash');
+        _               = require('lodash'),
+        turf            = require('turf');
 
     var models          = require('../../models');
 
     var sessionCookie       = null,
         mockUserOnRoute     = null,
+        mockSchool          = null,
         mockUser            = null,
         API_ENDPOINT        = 'http://localhost:3001/',
         server              = null;
@@ -48,7 +50,34 @@
                         }).then(function(user) {
                             mockUser = user;
                             userOnRoute.setUser(user);
-                            done();
+                            // Creating mock School
+                            models.School.create({
+                                'name': 'St. Patrick School',
+                                'latitude': -23.48,
+                                'longitude': -43.49
+                            }).then(function(school) {
+                                mockSchool = school;
+                                user.setSchool(school)
+                                    .then(function() {
+                                        // Grab user JWT token:
+                                        request.post(API_ENDPOINT + 'users/login', {
+                                            json: true,
+                                            body: {
+                                                'username': 'test',
+                                                'password': 'test'
+                                            }
+                                        }).then(function(body) {
+                                            body.token.should.not.equal(undefined);
+                                            sessionCookie = body.token;
+                                            done();
+                                        }, function(err) {
+                                            done(err);
+                                        });
+                                    });
+                            }, function(err) {
+                                done(err);
+                            });
+
                         }, function(err) {
                             done(err);
                         });
@@ -84,7 +113,59 @@
                 }
             }).then(function(body) {
                 body.token.should.not.equal(undefined);
-                sessionCookie = body.token;
+                done();
+            }, function(err) {
+                done(err);
+            });
+        });
+
+        it('should calculate mock user\'s school distance', function(done) {
+
+            var coordinates = [
+                -23.47,
+                -43.48
+            ];
+
+            request(API_ENDPOINT + 'api/me/school/distance/' +
+                    coordinates[0] + '/' +
+                    coordinates[1], {
+                json: true,
+                headers: {
+                    'Authorization': 'Bearer ' + sessionCookie
+                }
+            }).then(function(body) {
+
+                var x = turf.point(coordinates);
+                var y = turf.point([
+                    mockSchool.latitude,
+                    mockSchool.longitude
+                ]);
+
+                var distance = turf.distance(x, y);
+                body.distance.should.equal(distance);
+
+                done();
+
+            }, function(err) {
+                done(err);
+            });
+        });
+
+        it('should update the user position', function(done) {
+            request.post(API_ENDPOINT + 'api/me/position', {
+                json: true,
+                resolveWithFullResponse: true,
+                headers: {
+                    'Authorization': 'Bearer ' + sessionCookie
+                },
+                body: {
+                    'latitude': -42.27,
+                    'longitude': -23.48
+                }
+            }).then(function(res) {
+                res.statusCode.should.equal(200);
+                res.body.latitude.should.equal(-42.27);
+                res.body.longitude.should.equal(-23.48);
                 done();
             }, function(err) {
                 done(err);
@@ -127,6 +208,31 @@
                 res.statusCode.should.equal(200);
                 (typeof res.body).should.equal('object');
                 res.body.distance.should.equal(2830);
+                done();
+            }, function(err) {
+                done(err);
+            });
+        });
+
+        it('should update the user current route position', function(done) {
+            request({
+                uri: API_ENDPOINT + 'api/me/route',
+                method: 'POST',
+                resolveWithFullResponse: true,
+                json: true,
+                body: {
+                    'latitude': -43.78,
+                    'longitude': -23.48
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + sessionCookie
+                }
+            })
+            .then(function(res) {
+                res.statusCode.should.equal(200);
+                (typeof res.body).should.equal('object');
+                res.body.latitude.should.equal(-43.78);
+                res.body.longitude.should.equal(-23.48);
                 done();
             }, function(err) {
                 done(err);

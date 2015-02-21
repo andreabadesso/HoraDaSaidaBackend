@@ -31,7 +31,9 @@
                             models.UserOnRoute.create({
                                 'ETA': 1424427266000,
                                 'distance': 8205,
-                                'message': ''
+                                'message': '',
+                                'latitude': -43.78,
+                                'longitude': -23.72
                             }).then(function(userOnRoute) {
                                 if (!userOnRoute) {
                                     done(new Error('Unable to create User On Road'));
@@ -89,7 +91,9 @@
                 body: {
                     'ETA': 1424427266000,
                     'distance': 8205,
-                    'message': ''
+                    'message': '',
+                    'latitude': -43.78,
+                    'longitude': -23.72
                 }
             }).then(function(res) {
                 res.statusCode.should.equal(200);

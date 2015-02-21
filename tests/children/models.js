@@ -52,7 +52,8 @@
             models.Children.create({
                 'name': 'Laura',
                 'age': 14,
-                'class': '302B'
+                'class': '302B',
+                'picture': 'http://lorempixel.com/100/100/people/'
             }).then(function(child) {
                 child.getUsers()
                     .then(function(users) {
@@ -78,7 +79,8 @@
                 models.Children.create({
                     'name': 'Laura',
                     'age': 14,
-                    'class': '302B'
+                    'class': '302B',
+                    'picture': 'http://lorempixel.com/100/100/people/'
                 }).then(function(kid) {
                     user.addChildren(kid);
                     done();
