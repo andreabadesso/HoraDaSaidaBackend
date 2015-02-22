@@ -11,6 +11,7 @@
         res.send('Wow');
     });
 
+
     /**
      * @api {get} /api/me GetUserInformation
      *

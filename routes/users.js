@@ -5,12 +5,34 @@
         _           = require('lodash'),
         app         = require('../app'),
         router      = express.Router(),
-        jwt         = require('jsonwebtoken');
+        jwt         = require('jsonwebtoken'),
+        redis       = require('redis'),
+        redisClient = redis.createClient();
 
     var models      = require('../models');
 
+    router.get('/connected', function(req, res, next) {
+        redisClient.get('userList', function(err, reply) {
+            if (err) {
+                return next({
+                    'status': 500,
+                    'message': 'Could not get the list of connected users.'
+                });
+            }
+
+            if (reply) {
+                res.send(JSON.parse(reply));
+            } else {
+                return next({
+                    'status': 500,
+                    'message': 'Could not get the list of connected users.'
+                });
+            }
+        });
+    });
+
     /**
-     * @api {get} /user/:id FindUserById
+     * @api {get} /users/:id FindUserById
      *
      * @apiName FindUserById
      * @apiGroup User
@@ -32,7 +54,9 @@
             attributes: [
                 'id',
                 'username',
-                'name'
+                'name',
+                'latitude',
+                'longitude'
             ]
         })
         .then(function(user) {
@@ -47,7 +71,7 @@
     });
 
     /**
-     * @api {get} /user/ FindAllUsers
+     * @api {get} /users/ FindAllUsers
      *
      * @apiName FindAllUsers
      * @apiGroup User
@@ -62,7 +86,9 @@
             attributes: [
                 'id',
                 'username',
-                'name'
+                'name',
+                'latitude',
+                'longitude'
             ]
         })
         .then(function(users) {
@@ -71,7 +97,7 @@
     });
 
     /**
-     * @api {put} /user/ CreateUser
+     * @api {put} /users/ CreateUser
      *
      * @apiName CreateUser
      * @apiGroup User

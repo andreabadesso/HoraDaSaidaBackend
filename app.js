@@ -11,14 +11,14 @@
         jwt             = require('jsonwebtoken'),
         async           = require('async');
 
-    var routes          = require('./routes/index');
-    var users           = require('./routes/users');
-    var children        = require('./routes/children');
-    var classroom       = require('./routes/classroom');
-    var api             = require('./routes/api');
-    var departureTime   = require('./routes/departure');
-    var usersOnRoute    = require('./routes/user_on_route.js');
-    var school          = require('./routes/school.js');
+    var routes          = require('./routes/index'),
+        users           = require('./routes/users'),
+        children        = require('./routes/children'),
+        classroom       = require('./routes/classroom'),
+        api             = require('./routes/api'),
+        departureTime   = require('./routes/departure'),
+        usersOnRoute    = require('./routes/user_on_route.js'),
+        school          = require('./routes/school.js');
 
     var app = express();
 
